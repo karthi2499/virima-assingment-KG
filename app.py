@@ -1,4 +1,3 @@
-import os
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 
@@ -20,10 +19,4 @@ def echo():
 
 
 if __name__ == '__main__':
-    port = int(os.getenv("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
-# Note: The above code is a simple Flask application with two endpoints:
-
-
-
-
+    app.run(host='0.0.0.0', port=5000, debug=True)
