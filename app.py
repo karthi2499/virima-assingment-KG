@@ -1,4 +1,5 @@
 import constants as const
+from llm.app import llm
 from flask_cors import CORS
 from flask import Flask, request, jsonify
 from neo4j_connect.app import Neo4jConnection
@@ -17,12 +18,20 @@ def health_check():
     return jsonify(health_status), 200 if health_status['status'] == 'ok' else 500
 
 
-@app.route('/echo', methods=['POST'])
-def echo():
+@app.route('/chat', methods=['POST'])
+def chat():
     data = request.get_json()
     if not data or 'message' not in data:
         return jsonify({"error": "Invalid input"}), 400
-    return jsonify({"message": data['message']}), 200
+
+    message = data['message']
+    mode = data.get('mode', 'chat')  # Default mode is 'chat'
+    model = data.get('model', 'flash') # Default model is 'flash'
+    try:
+        response = llm(message, model=model, tools=mode)
+        return jsonify({"response": response}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/query', methods=['POST'])

@@ -6,7 +6,6 @@ class Neo4jConnection:
         self.driver = GraphDatabase.driver(url, auth=(user, password))
 
     def close(self):
-        print("Closing Neo4j connection")
         self.driver.close()
 
     def check_health(self):
