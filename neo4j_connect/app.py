@@ -1,12 +1,12 @@
-import constants as const
 from neo4j import GraphDatabase
 
 
 class Neo4jConnection:
-    def __init__(self, uri, user, password):
-        self.driver = GraphDatabase.driver(uri, auth=(user, password))
+    def __init__(self, url, user, password):
+        self.driver = GraphDatabase.driver(url, auth=(user, password))
 
     def close(self):
+        print("Closing Neo4j connection")
         self.driver.close()
 
     def check_health(self):

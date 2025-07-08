@@ -1,0 +1,2 @@
+Generate a response based on the user's input. 
+If the input requires external information, use the Google Search tool to find relevant data.
