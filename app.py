@@ -28,7 +28,7 @@ def chat():
     mode = data.get('mode', 'chat')  # Default mode is 'chat'
     model = data.get('model', 'flash') # Default model is 'flash'
     try:
-        response = llm(message, model=model, tools=mode)
+        response = llm(message, model=model, tools=mode, schema=neo4j_conn.schema)
         return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -46,6 +46,15 @@ def execute_query():
     try:
         result = neo4j_conn.query(query, parameters)
         return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/schema', methods=['GET'])
+def get_schema():
+    try:
+        schema = neo4j_conn.get_schema()
+        return jsonify({"schema": schema}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

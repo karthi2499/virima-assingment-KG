@@ -20,7 +20,7 @@ with open('llm/system-prompt.txt', 'r') as file:
     system_instruction = file.read().strip()
 
 
-def llm(user_input, model='flash', tools='chat'):
+def llm(user_input, model='flash', tools='chat', schema: str = None):
     """Generates a response from the Gemini model using the provided user input.
     Args:
         user_input (str): The input text from the user.
@@ -29,7 +29,7 @@ def llm(user_input, model='flash', tools='chat'):
     """
     config = types.GenerateContentConfig(
         tools=tools_mapping[tools],
-        system_instruction=system_instruction
+        system_instruction=f'{system_instruction}\n\n{schema}' if schema else '',
     )
 
     chat = client.chats.create(
