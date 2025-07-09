@@ -50,3 +50,23 @@ def _run_and_return_query(tx, query):
     # Consume the result stream and return the data as a list of dictionaries.
     # This must be done within the function passed to execute_read.
     return [record.data() for record in result]
+
+
+def read_csv_file(file_path: str):
+    """Reads a CSV file and returns its content as a list of dictionaries.
+    
+    Args:
+        file_path (str): The path to the CSV file.
+        
+    Returns:
+        list: A list of dictionaries representing the rows in the CSV file.
+    """
+    print(f"Reading CSV file from path: {file_path}")
+    file_path = file_path.strip()
+    import pandas as pd
+    try:
+        df = pd.read_csv(rf'{file_path}', dtype=str, engine='pyarrow')  # Read CSV file with all data as strings
+        return df.sample(20).to_dict(orient='records')  # Convert DataFrame to list of dictionaries
+    except Exception as e:
+        print(f"Error reading CSV file: {str(e)}")
+        raise RuntimeError(f"Failed to read CSV file: {str(e)}")

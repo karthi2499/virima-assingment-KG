@@ -1,3 +1,4 @@
+import logging
 import constants as const
 from llm.app import llm
 from flask_cors import CORS
@@ -7,6 +8,10 @@ from neo4j_connect.app import Neo4jConnection
 # Flask application setup
 app = Flask(__name__)
 CORS(app)
+
+# Configure logging
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
 
 # Initialize Neo4j connection
 neo4j_conn = Neo4jConnection(const.neo4j_url, const.neo4j_user, const.neo4j_password)
@@ -28,7 +33,7 @@ def chat():
     mode = data.get('mode', 'chat')  # Default mode is 'chat'
     model = data.get('model', 'flash') # Default model is 'flash'
     try:
-        response = llm(message, model=model, tools=mode, schema=neo4j_conn.schema)
+        response = llm(message, model=model, tools=mode, schema=neo4j_conn.get_schema())
         return jsonify({"response": response}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -55,6 +60,21 @@ def get_schema():
     try:
         schema = neo4j_conn.get_schema()
         return jsonify({"schema": schema}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/load_data', methods=['POST'])
+def load_data():
+    data = request.get_json()
+    if not data or 'query' not in data:
+        return jsonify({"error": "Invalid input"}), 400
+
+    query = data['query']
+    try:
+        # Assuming load_data is a method in Neo4jConnection to handle data loading
+        resposne = neo4j_conn.query(query=query)
+        return jsonify({"message": resposne}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
