@@ -13,8 +13,8 @@ model_mapping = {
 
 tools_mapping = {
     'chat': [tool_app.grounding_tool],
-    'neo4j': [tool_app.read_csv_file],
-    'neo4j_chat': [tool_app.execute_neo4j_query],
+    'neo4j': [tool_app.read_csv_file, tool_app.execute_neo4j_query],
+    # 'neo4j_chat': [tool_app.execute_neo4j_query],
 }
 
 with open('llm/system-prompt.txt', 'r') as file:
@@ -30,13 +30,12 @@ def llm(user_input, model='flash', tools='chat', schema: str = None):
     """
     config = types.GenerateContentConfig(
         tools=tools_mapping[tools],
-        system_instruction=f'{system_instruction}\n\n{schema}' if schema and tools == 'neo4j_chat' else system_instruction,
+        system_instruction=f'{system_instruction}\n\n{schema}' if schema else system_instruction,
     )
 
     chat = client.chats.create(
         model=model_mapping[model], 
-        config=config,
-        
+        config=config
     )
     response = chat.send_message(user_input)
     return response.text

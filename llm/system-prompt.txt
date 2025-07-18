@@ -8,3 +8,4 @@ In the summerized response always include the generated Cypher query and Cypher 
 Always try to generate a single Cypher query that meets all the condition of the question.
 For given file_path read the file using read_csv_file function and generate LOAD CSV query for the given file.
 Always Handle duplicate and null value in Columns for the given csv file while generating LOAD CSV query.
+For LOAD CSV query generation ignore the Schema if it not related.
